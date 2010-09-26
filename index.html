@@ -1,0 +1,130 @@
+A small page showing off a genetic algorithm implementation in JavaScript.
+  The algorithm takes the JavaScript object from the text box and determine
+  what values should be passed to the fitness function to produce the smallest resulting value.
+  <!-- End Intro --> 
+<script src="JavaScript Genetic Algorithm/javascriptgeneticalgorithm.js" type="text/javascript"></script>
+<p>
+The included example tries to find the shortest path between a set of points (the travelling salesman problem).
+<p>
+<form>
+<textarea cols="80" rows="15" name="fitness">
+function salesman() {
+    this.points = [ [0,0], [10,10], [6,6], [5,6], [3,3], [7,2] ];
+
+    this.distance = function(a, b) {
+        var x = Math.abs(a[0] - b[0]);
+        var y = Math.abs(a[1] - b[1]);
+        return Math. sqrt(x * x + y * y);
+    };
+
+    this.fitness = function(values) {
+        var used = [this.points.length];
+        var length = 0;
+        var previous = values[0];
+        var a = this.points[previous];
+        used[previous] = 1;
+        var b = 0;
+        for (var i = 1; i < values.length; ++i) {
+            b = this.points[values[i]];
+            if (used[values[i]] == 1)
+                return 1000;
+            length += this.distance(a, b);
+            previous = values[i];
+            used[previous] = 1;
+            a = b;
+        }
+        return length;
+    };
+    
+    // the size of values that should be passed to fitness
+    this.numberOfArgs = function() { return this.points.length; };
+    
+    // the max value needed for the arguments
+    this.maxArg = function() { return this.points.length; };
+    
+    // convert the current chromosome value which can have a maxValue
+    // into something fitness can use.
+    this.getArg = function(value, maxValue) {
+        return Math.round(value * (this.points.length - 1) / maxValue);
+    };
+
+    // Paint the solution onto bestimage
+    this.paint = function(values) {
+        var canvas = document.getElementById('bestimage');
+        if (canvas.getContext){
+            var w = canvas.width;
+            var h = canvas.height;
+            var canvasContext = canvas.getContext('2d');
+            canvasContext.clearRect(0, 0, w, h);
+
+            // draw points
+            for (var i = 0; i < this.points.length; ++i){
+                var x = this.points[values[i]][0] * 10;
+                var y = this.points[values[i]][1] * 10;
+                canvasContext.beginPath();
+                canvasContext.arc(x, y, 3, 0, Math.PI*2, true);
+                canvasContext.fill();
+            }
+            
+            // draw path
+            canvasContext.beginPath();
+            for (var i = 0; i < this.points.length; ++i){
+                var x = this.points[values[i]][0] * 10;
+                var y = this.points[values[i]][1] * 10;
+                if (i == 0)
+                    canvasContext.moveTo(x, y);
+                else
+                    canvasContext.lineTo(x, y);
+            }
+            canvasContext.stroke();
+        }
+    }
+
+}
+salesman;
+</textarea>
+<br>
+Number of generations:
+<input type="text" name="generations" size="6", value="300"> <a href="http://en.wikipedia.org/wiki/Genetic_algorithm#Reproduction">[?]</a>
+
+<br>Number of chromosomes in the population:
+<input type="text" name="populationSize" size="6", value="50"> <a href="http://en.wikipedia.org/wiki/Chromosome_%28genetic_algorithm%29">[?]</a>
+
+<br>Mutation rate:
+<input type="text" name="mutationRate" size="4", value="0.05">% <a href="http://en.wikipedia.org/wiki/Mutation_%28genetic_algorithm%29">[?]</a>
+
+<br>Crossover rate:
+<input type="text" name="crossoverRate" size="4", value="0.75">% <a href="http://en.wikipedia.org/wiki/Crossover_%28genetic_algorithm%29">[?]</a>
+<br>
+<input type="button" value="Run" onClick="run();">
+
+<h3>Results</h3>
+Chromosome: <input type="text" name="best">
+Fitness: <input type="text" name="maxFitness">
+</form>
+
+<p>
+If you are using a browser that supports that canvas tag (webkit or gecko engine) you will see below a nice graph of the history of the best values.<p>
+<canvas id="graph" style="border: solid 1px black; width: 500px; height: 150px;">History Graph</canvas>
+<p id="graphdata"></p>
+And the best value as painted by the fitness function itself:
+<p>
+<canvas id="bestimage" style="border: solid 1px black; width: 500px; height: 150px;"></canvas>
+<p>
+
+Useful Links:
+<ul>
+<li><a href="http://www.amazon.com/exec/obidos/ASIN/0201157675/wwwicefoxnet-20">Genetic Algorithms in Search, Optimization, and Machine Learning by David E Goldberg on Amazon</a>
+
+<li>
+<a href="http://books.google.com/books?id=0eznlz0TF-IC&dq=melanie+mitchell+genetic+algorithms&pg=PP1&ots=sdqG3X15Pf&sig=_shi5BWrDHu1G5z4dqwvMkZ_dzs&prev=http://www.google.com/search%3Fq%3Dmelanie%2Bmitchell%2Bgenetic%2Balgorithms%26start%3D0%26ie%3Dutf-8%26oe%3Dutf-8%26client%3Dfirefox-a%26rls%3Dorg.mozilla:es-ES:official&sa=X&oi=print&ct=result&cd=2#PPP1,M1">
+An Introduction to Genetic Algorithms By Melanie Mitchell on Google books</a>
+
+<li>
+<a href="http://books.google.com/books?id=RRKo9xVFW_QC&pg=PR7&ots=LpqMM5RE2E&dq=gusz+eiben+genetic+algorithms&sig=cQA4wzHw0MkNiwAjioYyseE_u6Y#PPP1,M1">Introduction to Evolutionary Computing By A.E. Eiben & J.E. Smith on Google books</a>
+
+<li><a href="JavaScript Genetic Algorithm/javascriptgeneticalgorithm.js">Source code to the genetic algorithm javascript code used on this page.</a>
+<li><a href="http://en.wikipedia.org/wiki/Genetic_algorithm">Genetic Algorithms on Wikipedia</a>
+
+
+</ul>
